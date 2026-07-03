@@ -1,0 +1,39 @@
+server:
+  servlet:
+    context-path: /sfs
+  tomcat:
+    max-part-count: 10
+    max-http-form-post-size: 10GB
+spring:
+  application:
+    name: simple-file-server
+  main:
+    keep-alive: true
+  threads:
+    virtual:
+      enabled: true
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 10GB
+      file-size-threshold: 5MB
+  jackson:
+    default-property-inclusion: NON_NULL
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  sql:
+    init:
+      schema-locations:
+        - classpath:database/schema/sfs.files.sql
+        - classpath:database/schema/sfs.users.sql
+      data-locations:
+        - classpath:database/data/sfs.users.sql
+      mode: ALWAYS
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+sfs:
+  path-prefix: ${SFS_PATH_PREFIX:${user.home}/.sfs}

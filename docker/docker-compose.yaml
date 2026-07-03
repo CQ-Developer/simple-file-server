@@ -1,0 +1,37 @@
+x-deploy: &x-deploy
+  restart_policy:
+    condition: on-failure
+    max_attempts: 5
+    delay: 3s
+    window: 10s
+
+name: simple-file-server
+
+services:
+  pg:
+    image: postgres:18-alpine
+    deploy: *x-deploy
+    env_file: .env
+    volumes:
+      - type: volume
+        source: sfs-pg
+        target: /var/lib/postgresql
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    deploy: *x-deploy
+    env_file: .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      pg:
+        condition: service_started
+    volumes:
+      - type: volume
+        source: sfs-app
+        target: /home/sfs/.sfs
+
+volumes:
+  sfs-pg:
+  sfs-app:

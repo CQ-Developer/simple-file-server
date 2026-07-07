@@ -12,6 +12,7 @@ public class FileInfoResp {
 	private String name;
 	private String hash;
 	private Long size;
+	private String uploader;
 	private LocalDateTime uploadTime;
 
 }

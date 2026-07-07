@@ -1,21 +1,23 @@
 package com.chen.sfs.repository;
 
-import com.chen.sfs.exception.DatabaseOperationException;
-import com.chen.sfs.repository.jpa.FilesJpaRepository;
-import com.chen.sfs.repository.jpa.entity.FilesEntity;
-import com.chen.sfs.repository.jpa.entity.FilesEntity_;
-import lombok.RequiredArgsConstructor;
+import static org.springframework.util.ObjectUtils.isEmpty;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.data.jpa.domain.PredicateSpecification;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import com.chen.sfs.exception.DatabaseOperationException;
+import com.chen.sfs.repository.jpa.FilesJpaRepository;
+import com.chen.sfs.repository.jpa.entity.FilesEntity;
+import com.chen.sfs.repository.jpa.entity.FilesEntity_;
 
-import static org.springframework.util.ObjectUtils.isEmpty;
+import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
@@ -51,6 +53,17 @@ public class FilesRepository {
 		}
 		try {
 			return repository.findById(id);
+		} catch (Throwable e) {
+			throw new DatabaseOperationException("Failed to query file information", e);
+		}
+	}
+
+	public Optional<FilesEntity> findByHash(String hash) {
+		if (isEmpty(hash)) {
+			return Optional.empty();
+		}
+		try {
+			return repository.findOne(eqHash(hash));
 		} catch (Throwable e) {
 			throw new DatabaseOperationException("Failed to query file information", e);
 		}

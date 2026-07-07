@@ -1,16 +1,16 @@
 create schema if not exists sfs;
 
 create table if not exists sfs.files (
-    id uuid not null,
+	id uuid not null,
 	name text not null,
 	hash text not null,
 	media_type text not null,
 	size bigint not null,
 	absolute_path text not null,
 	upload_time timestamp not null,
-    uploader text not null,
+	uploader text not null,
 	primary key (id),
-	unique (hash, name)
+	unique (hash, name, uploader)
 );
 
 comment on table sfs.files is 'File information table';

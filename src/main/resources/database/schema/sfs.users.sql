@@ -1,14 +1,14 @@
 create schema if not exists sfs;
 
 create table if not exists sfs.users (
-    username text not null,
-    password text not null,
-    enabled boolean not null,
-    locked boolean not null,
-    last_login_time timestamp not null,
-    last_password_time timestamp not null,
-    authorities text array not null,
-    primary key (username)
+	username text not null,
+	password text not null,
+	enabled boolean not null,
+	locked boolean not null,
+	last_login_time timestamp not null,
+	last_password_time timestamp not null,
+	authorities text array not null,
+	primary key (username)
 );
 
 comment on table sfs.users is 'User information table';

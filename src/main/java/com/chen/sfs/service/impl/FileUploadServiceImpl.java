@@ -1,11 +1,12 @@
 package com.chen.sfs.service.impl;
 
-import com.chen.sfs.config.properties.SfsProperties;
-import com.chen.sfs.exception.FileUploadException;
-import com.chen.sfs.repository.FilesRepository;
-import com.chen.sfs.repository.jpa.entity.FilesEntity;
-import com.chen.sfs.service.FileUploadService;
-import lombok.RequiredArgsConstructor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
@@ -13,12 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import com.chen.sfs.config.properties.SfsProperties;
+import com.chen.sfs.exception.FileUploadException;
+import com.chen.sfs.repository.FilesRepository;
+import com.chen.sfs.repository.jpa.entity.FilesEntity;
+import com.chen.sfs.service.FileUploadService;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +45,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 				continue;
 			}
 			var media = detectMediaType(name, file);
-			var abs = saveToFileSystem(file, hash, pre);
+			var abs = repository.findByHash(hash)
+				.map(FilesEntity::getAbsolutePath)
+				.orElseGet(() -> saveToFileSystem(file, hash, pre));
 			entities.add(createFileInfo(name, hash, media, file.getSize(), abs, uploader, now));
 		}
 		repository.saveAll(entities);

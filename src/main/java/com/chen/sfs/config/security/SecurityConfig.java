@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.BCryptVersion.$2B;
@@ -32,6 +33,22 @@ public class SecurityConfig {
 			               .anyRequest().authenticated()
 			   )
 		           .httpBasic(Customizer.withDefaults())
+		           .formLogin(form ->
+				   form.successHandler((_, resp, auth) -> {
+					       resp.setStatus(OK.value());
+					       resp.setContentType(APPLICATION_JSON_VALUE);
+					       resp.getWriter().write("{\"success\":true,\"message\":\"ok\",\"data\":{\"username\":\"" + auth.getName() + "\"}}");
+				       })
+			               .failureHandler((_, resp, _) -> {
+					       resp.setStatus(UNAUTHORIZED.value());
+					       resp.setCharacterEncoding(UTF_8);
+					       resp.setContentType(APPLICATION_JSON_VALUE);
+					       resp.getWriter().write("{\"success\": false,\"message\":\"Invalid username or password\"}");
+				       })
+			   )
+		           .logout(logout ->
+				   logout.logoutUrl("/logout")
+			   )
 		           .csrf(AbstractHttpConfigurer::disable)
 		           .exceptionHandling(ex ->
 				   ex.accessDeniedHandler((_, resp, _) -> {

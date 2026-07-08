@@ -1,7 +1,12 @@
 .gradle/
 .idea/
 .vscode/
+.settings/
+bin/
 build/
 logs/
 
+.classpath
+.project
+.factorypath
 .env

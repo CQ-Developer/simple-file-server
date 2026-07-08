@@ -26,9 +26,9 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) {
 		return http.authorizeHttpRequests(auth ->
-				   auth.requestMatchers("/api/upload").hasAuthority("sfs:file:upload")
-			               .requestMatchers("/api/download/{id}").hasAuthority("sfs:file:download")
-			               .requestMatchers("/api/delete/{id}").hasAuthority("sfs:file:delete")
+				   auth.requestMatchers("/api/file/upload").hasAuthority("sfs:file:upload")
+			               .requestMatchers("/api/file/download/{id}").hasAuthority("sfs:file:download")
+			               .requestMatchers("/api/file/delete/{id}").hasAuthority("sfs:file:delete")
 			               .requestMatchers("/actuator/health").permitAll()
 			               .anyRequest().authenticated()
 			   )

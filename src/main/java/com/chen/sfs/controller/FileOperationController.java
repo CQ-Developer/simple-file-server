@@ -32,7 +32,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/files")
 @RequiredArgsConstructor
 public class FileOperationController {
 
@@ -49,7 +49,7 @@ public class FileOperationController {
 		return AppResp.ok();
 	}
 
-	@GetMapping("/download/{id}")
+	@GetMapping("/{id}/download")
 	public ResponseEntity<Resource> download(@PathVariable("id") UUID id) {
 		var file = fileDownloadService.download(id);
 		var disposition = ContentDisposition
@@ -65,7 +65,7 @@ public class FileOperationController {
 			.body(new FileSystemResource(file.getAbsolutePath()));
 	}
 
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	public AppResp<Void> delete(
 		@AuthenticationPrincipal(expression = "username") String uploader,
 		@PathVariable("id") UUID id) {
@@ -73,7 +73,7 @@ public class FileOperationController {
 		return AppResp.ok();
 	}
 
-	@GetMapping("/files")
+	@GetMapping
 	public AppResp<PageResp<FileInfoResp>> find(
 		@AuthenticationPrincipal(expression = "username") String uploader,
 		@RequestParam(name = "name", required = false) String name,

@@ -68,7 +68,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 
 	private String calculateHash(MultipartFile file) {
 		try {
-			return DigestUtils.sha512Hex(file.getInputStream());
+			return DigestUtils.sha256Hex(file.getInputStream());
 		} catch (Throwable e) {
 			throw new FileUploadException("Failed to calculate file hash", e);
 		}

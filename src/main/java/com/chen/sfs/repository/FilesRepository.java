@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.chen.sfs.exception.AppException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.data.jpa.domain.PredicateSpecification;
 import org.springframework.stereotype.Repository;
 
-import com.chen.sfs.exception.DatabaseOperationException;
 import com.chen.sfs.repository.jpa.FilesJpaRepository;
 import com.chen.sfs.repository.jpa.entity.FilesEntity;
 import com.chen.sfs.repository.jpa.entity.FilesEntity_;
@@ -29,7 +29,7 @@ public class FilesRepository {
 		try {
 			repository.saveAll(entities);
 		} catch (Throwable e) {
-			throw new DatabaseOperationException("Failed to save file information", e);
+			throw new AppException("Failed to save file information", e);
 		}
 	}
 
@@ -43,7 +43,7 @@ public class FilesRepository {
 				.and(eqUploader(uploader));
 			return repository.exists(ps);
 		} catch (Throwable e) {
-			throw new DatabaseOperationException("Failed to query file information", e);
+			throw new AppException("Failed to query file information", e);
 		}
 	}
 
@@ -54,7 +54,7 @@ public class FilesRepository {
 		try {
 			return repository.findById(id);
 		} catch (Throwable e) {
-			throw new DatabaseOperationException("Failed to query file information", e);
+			throw new AppException("Failed to query file information", e);
 		}
 	}
 
@@ -65,7 +65,7 @@ public class FilesRepository {
 		try {
 			return repository.findOne(eqHash(hash));
 		} catch (Throwable e) {
-			throw new DatabaseOperationException("Failed to query file information", e);
+			throw new AppException("Failed to query file information", e);
 		}
 	}
 
@@ -76,7 +76,7 @@ public class FilesRepository {
 		try {
 			repository.deleteById(id);
 		} catch (Throwable e) {
-			throw new DatabaseOperationException("Failed to delete file information", e);
+			throw new AppException("Failed to delete file information", e);
 		}
 	}
 
@@ -87,7 +87,7 @@ public class FilesRepository {
 		try {
 			return repository.count(eqHash(hash));
 		} catch (Throwable e) {
-			throw new DatabaseOperationException("Failed to count file information", e);
+			throw new AppException("Failed to count file information", e);
 		}
 	}
 

@@ -1,6 +1,6 @@
 package com.chen.sfs.service.impl;
 
-import com.chen.sfs.exception.FileDeleteException;
+import com.chen.sfs.exception.AppException;
 import com.chen.sfs.repository.FilesRepository;
 import com.chen.sfs.service.FileDeleteService;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class FileDeleteServiceImpl implements FileDeleteService {
                 try {
                         Files.deleteIfExists(file);
                 } catch (IOException e) {
-                        throw new FileDeleteException("Failed to delete file", e);
+                        throw new AppException("Failed to delete file", e);
                 }
         }
 

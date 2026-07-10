@@ -1,9 +1,9 @@
 package com.chen.sfs.service;
 
-import com.chen.sfs.exception.PasswordUpdateException;
+import com.chen.sfs.exception.AppException;
 import com.chen.sfs.repository.UsersRepository;
 import com.chen.sfs.repository.jpa.entity.UsersEntity;
-import com.chen.sfs.service.impl.PasswordUpdateServiceImpl;
+import com.chen.sfs.service.impl.UserPasswordUpdateServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,52 +25,52 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.BCryptVersion.$2B;
 
 @ExtendWith(MockitoExtension.class)
-class PasswordUpdateServiceTest {
+class UserPasswordUpdateServiceTest {
 
-	final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder($2B, 12);
+	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder($2B, 12);
 
-	PasswordUpdateService passwordUpdateService;
+	UserPasswordUpdateService userPasswordUpdateService;
 
 	@Mock
 	UsersRepository usersRepository;
 
 	@BeforeEach
 	void setup() {
-		passwordUpdateService = new PasswordUpdateServiceImpl(passwordEncoder, usersRepository);
+		userPasswordUpdateService = new UserPasswordUpdateServiceImpl(passwordEncoder, usersRepository);
 	}
 
 	@Test
 	void update_password_without_user() {
-		when(usersRepository.findUser(anyString())).thenReturn(Optional.empty());
+		when(usersRepository.findById(anyString())).thenReturn(Optional.empty());
 
-		assertThatCode(() -> passwordUpdateService.updatePassword("dummy", "", ""))
+		assertThatCode(() -> userPasswordUpdateService.updatePassword("dummy", "", ""))
 			.doesNotThrowAnyException();
 
-		verify(usersRepository, never()).update(any());
+		verify(usersRepository, never()).save(any());
 	}
 
 	@Test
 	void update_password_with_wrong_password() {
 		var user = new UsersEntity();
 		user.setPassword(passwordEncoder.encode("123"));
-		when(usersRepository.findUser(anyString())).thenReturn(Optional.of(user));
+		when(usersRepository.findById(anyString())).thenReturn(Optional.of(user));
 
-		assertThatCode(() -> passwordUpdateService.updatePassword("dummy", "abc", ""))
-			.isInstanceOf(PasswordUpdateException.class).hasMessage("Old password invalid");
+		assertThatCode(() -> userPasswordUpdateService.updatePassword("dummy", "abc", ""))
+			.isInstanceOf(AppException.class).hasMessage("Old password invalid");
 
-		verify(usersRepository, never()).update(any());
+		verify(usersRepository, never()).save(any());
 	}
 
 	@Test
 	void update_password_ok() {
 		var user = new UsersEntity();
 		user.setPassword(passwordEncoder.encode("123"));
-		when(usersRepository.findUser(anyString())).thenReturn(Optional.of(user));
-		doNothing().when(usersRepository).update(any());
+		when(usersRepository.findById(anyString())).thenReturn(Optional.of(user));
+		doNothing().when(usersRepository).save(any());
 
-		assertThatCode(() -> passwordUpdateService.updatePassword("dummy", "123", "abc")).doesNotThrowAnyException();
+		assertThatCode(() -> userPasswordUpdateService.updatePassword("dummy", "123", "abc")).doesNotThrowAnyException();
 
-		verify(usersRepository, times(1)).update(any());
+		verify(usersRepository, times(1)).save(any());
 	}
 
 }

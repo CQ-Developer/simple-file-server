@@ -1,4 +1,4 @@
-package com.chen.sfs.controller.common;
+package com.chen.sfs.controller.resp;
 
 import java.util.List;
 

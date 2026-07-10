@@ -37,7 +37,12 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @WithMockUser(
 	username = "admin",
-	authorities = {"sfs:file:upload", "sfs:file:download", "sfs:file:delete"}
+	authorities = {
+		"sfs:files:upload",
+		"sfs:files:download",
+		"sfs:files:delete",
+		"sfs:files:list"
+	}
 )
 @Import(SecurityConfig.class)
 @WebMvcTest(FileOperationController.class)
@@ -65,7 +70,7 @@ class FileOperationControllerTest {
 	void upload_without_file() {
 		var result = mockMvcTester
 			.post()
-			.uri("/api/upload")
+			.uri("/api/files/upload")
 			.multipart()
 			.exchange();
 
@@ -81,7 +86,7 @@ class FileOperationControllerTest {
 
 		var result = mockMvcTester
 			.post()
-			.uri("/api/upload")
+			.uri("/api/files/upload")
 			.multipart()
 			.file("files", new byte[0])
 			.exchange();
@@ -103,7 +108,7 @@ class FileOperationControllerTest {
 
 		var result = mockMvcTester
 			.get()
-			.uri("/api/download/{id}", UUID.randomUUID())
+			.uri("/api/files/{id}/download", UUID.randomUUID())
 			.exchange();
 
 		assertThat(result).hasStatusOk();
@@ -117,7 +122,7 @@ class FileOperationControllerTest {
 
 		var result = mockMvcTester
 			.delete()
-			.uri("/api/delete/{id}", UUID.randomUUID())
+			.uri("/api/files/{id}", UUID.randomUUID())
 			.exchange();
 
 		assertThat(result).hasStatusOk();
@@ -127,7 +132,7 @@ class FileOperationControllerTest {
 	}
 
 	@Test
-	void find() {
+	void list() {
 		var file = FileInfo.builder().name("a.txt").build();
 		var page = Page.<FileInfo>builder().pages(1).records(List.of(file)).build();
 		when(filesService.findFiles(anyString(), any(), anyInt(), anyInt())).thenReturn(page);

@@ -1,7 +1,7 @@
 package com.chen.sfs.controller;
 
-import com.chen.sfs.controller.common.AppResp;
-import com.chen.sfs.controller.common.PageResp;
+import com.chen.sfs.controller.resp.AppResp;
+import com.chen.sfs.controller.resp.PageResp;
 import com.chen.sfs.controller.resp.FileInfoResp;
 import com.chen.sfs.mapper.FileInfoMapper;
 import com.chen.sfs.service.FileDeleteService;
@@ -74,7 +74,7 @@ public class FileOperationController {
 	}
 
 	@GetMapping
-	public AppResp<PageResp<FileInfoResp>> find(
+	public AppResp<PageResp<FileInfoResp>> list(
 		@AuthenticationPrincipal(expression = "username") String uploader,
 		@RequestParam(name = "name", required = false) String name,
 		@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,

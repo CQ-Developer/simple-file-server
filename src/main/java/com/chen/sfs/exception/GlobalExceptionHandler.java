@@ -1,6 +1,6 @@
 package com.chen.sfs.exception;
 
-import com.chen.sfs.controller.common.AppResp;
+import com.chen.sfs.controller.resp.AppResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;

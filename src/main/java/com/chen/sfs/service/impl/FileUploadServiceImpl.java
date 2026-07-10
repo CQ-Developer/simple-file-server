@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.chen.sfs.exception.AppException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.chen.sfs.config.properties.SfsProperties;
-import com.chen.sfs.exception.FileUploadException;
 import com.chen.sfs.repository.FilesRepository;
 import com.chen.sfs.repository.jpa.entity.FilesEntity;
 import com.chen.sfs.service.FileUploadService;
@@ -62,7 +62,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 			Files.createDirectories(dir);
 			return dir;
 		} catch (Throwable e) {
-			throw new FileUploadException("Failed to create parent date directory", e);
+			throw new AppException("Failed to create parent date directory", e);
 		}
 	}
 
@@ -70,7 +70,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 		try {
 			return DigestUtils.sha256Hex(file.getInputStream());
 		} catch (Throwable e) {
-			throw new FileUploadException("Failed to calculate file hash", e);
+			throw new AppException("Failed to calculate file hash", e);
 		}
 	}
 
@@ -85,7 +85,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 		try {
 			return tika.detect(file.getInputStream(), name);
 		} catch (Throwable e) {
-			throw new FileUploadException("Failed to detect media type", e);
+			throw new AppException("Failed to detect media type", e);
 		}
 	}
 
@@ -97,15 +97,14 @@ public class FileUploadServiceImpl implements FileUploadService {
 			}
 			return abs;
 		} catch (Throwable e) {
-			throw new FileUploadException("Failed to save file to filesystem", e);
+			throw new AppException("Failed to save file to filesystem", e);
 		}
 	}
 
 	private FilesEntity createFileInfo(
-		String name, String hash, String media,
-		Long size, Path abs, String uploader,
-		LocalDateTime now
-	) {
+			String name, String hash, String media,
+			Long size, Path abs, String uploader,
+			LocalDateTime now) {
 		var entity = new FilesEntity();
 		entity.setName(name);
 		entity.setHash(hash);

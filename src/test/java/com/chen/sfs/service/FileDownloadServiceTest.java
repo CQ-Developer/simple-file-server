@@ -1,6 +1,6 @@
 package com.chen.sfs.service;
 
-import com.chen.sfs.exception.FileDownloadException;
+import com.chen.sfs.exception.AppException;
 import com.chen.sfs.repository.FilesRepository;
 import com.chen.sfs.repository.jpa.entity.FilesEntity;
 import com.chen.sfs.service.impl.FileDownloadServiceImpl;
@@ -45,7 +45,7 @@ class FileDownloadServiceTest {
         void download_without_file_in_db() {
                 when(repository.findById(any())).thenReturn(Optional.empty());
 
-                assertThatThrownBy(() -> service.download(UUID.randomUUID())).isInstanceOf(FileDownloadException.class).hasMessage("File not found");
+                assertThatThrownBy(() -> service.download(UUID.randomUUID())).isInstanceOf(AppException.class).hasMessage("File not found");
 
                 verify(repository, times(1)).findById(any());
                 verify(repository, never()).deleteById(any());
@@ -58,7 +58,7 @@ class FileDownloadServiceTest {
                 when(repository.findById(any())).thenReturn(Optional.of(entity));
                 doNothing().when(repository).deleteById(any());
 
-                assertThatThrownBy(() -> service.download(UUID.randomUUID())).isInstanceOf(FileDownloadException.class).hasMessage("File not found");
+                assertThatThrownBy(() -> service.download(UUID.randomUUID())).isInstanceOf(AppException.class).hasMessage("File not found");
 
                 verify(repository, times(1)).findById(any());
                 verify(repository, times(1)).deleteById(any());

@@ -18,7 +18,7 @@ public class DefaultUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		var entity = repository.findUser(username)
+		var entity = repository.findById(username)
 		                       .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 		return new User(
 			entity.getUsername(),

@@ -1,4 +1,4 @@
-package com.chen.sfs.controller.common;
+package com.chen.sfs.controller.resp;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +24,7 @@ public class AppResp<T> {
         }
 
         public static AppResp<Void> err() {
-                return err("未知错误");
+                return err("Unknown error");
         }
 
 }
